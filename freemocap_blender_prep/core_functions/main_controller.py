@@ -3,15 +3,15 @@ from pathlib import Path
 from typing import List
 import numpy as np
 
-from freemocap_data_handler.data_models.parameter_models.parameter_models import Config
-from freemocap_data_handler.utilities.get_or_create_freemocap_data_handler import (
+from freemocap_blender_prep.data_models.parameter_models.parameter_models import Config
+from freemocap_blender_prep.freemocap_data_handler.utilities.get_or_create_freemocap_data_handler import (
     get_or_create_freemocap_data_handler,
 )
-from freemocap_data_handler.utilities.load_data import load_freemocap_data
-from freemocap_data_handler.operations.put_skeleton_on_ground import put_skeleton_on_ground
-from freemocap_data_handler.operations.enforce_rigid_bones.enforce_rigid_bones import enforce_rigid_bones
-from freemocap_data_handler.operations.fix_hand_data import fix_hand_data
-from freemocap_data_handler.helpers.saver import FreemocapDataSaver
+from freemocap_blender_prep.freemocap_data_handler.utilities.load_data import load_freemocap_data
+from freemocap_blender_prep.freemocap_data_handler.operations.put_skeleton_on_ground import put_skeleton_on_ground
+from freemocap_blender_prep.freemocap_data_handler.operations.enforce_rigid_bones.enforce_rigid_bones import enforce_rigid_bones
+from freemocap_blender_prep.freemocap_data_handler.operations.fix_hand_data import fix_hand_data
+from freemocap_blender_prep.freemocap_data_handler.helpers.saver import FreemocapDataSaver
 
 
 
@@ -22,22 +22,13 @@ class MainController:
     This class is used to run the program as a main script.
     """
 
-    def __init__(self, recording_path: str, blend_file_path: str, config: Config):
-
-        self.config = config #NOTE: might not actually need config
+    def __init__(self, recording_path: str):
 
         self.recording_path = recording_path
-        self.blend_file_path = blend_file_path
         self.recording_name = Path(self.recording_path).stem
-        # self._output_video_path = str(Path(self.blend_file_path).parent / f"{self.recording_name}_video_output.mp4")
-        # self.origin_name = f"{self.recording_name}_origin"
-        # self.rig_name = f"{self.recording_name}_rig"
         self.freemocap_data_handler = get_or_create_freemocap_data_handler(
             recording_path=self.recording_path
         )
-        self.empties = None
-
-
 
     def load_freemocap_data(self):
         try:
@@ -46,9 +37,7 @@ class MainController:
                 recording_path=self.recording_path
             )
             self.freemocap_data_handler.mark_processing_stage("original_from_file")
-            # set_start_end_frame(
-            #     number_of_frames=self.freemocap_data_handler.number_of_frames
-            # )
+            
         except Exception as e:
             print(f"Failed to load freemocap data: {e}")
             raise e
@@ -126,6 +115,6 @@ if __name__ == '__main__':
     recording_path = r"C:\Users\aaron\FreeMocap_Data\recording_sessions\session_2024-02-14_14_33_40\recording_14_35_07_gmt-5"
     blend_file_path = None
     config = Config()
-    main_controller = MainController(recording_path, blend_file_path, config)
+    main_controller = MainController(recording_path)
     main_controller.run_all()
     print("done")

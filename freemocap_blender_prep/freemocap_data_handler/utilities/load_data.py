@@ -1,5 +1,5 @@
-from freemocap_data_handler.handler import FreemocapDataHandler
-from freemocap_data_handler.utilities.get_or_create_freemocap_data_handler import create_freemocap_data_handler
+from freemocap_blender_prep.freemocap_data_handler.handler import FreemocapDataHandler
+from freemocap_blender_prep.freemocap_data_handler.utilities.get_or_create_freemocap_data_handler import create_freemocap_data_handler
 
 
 def load_freemocap_data(

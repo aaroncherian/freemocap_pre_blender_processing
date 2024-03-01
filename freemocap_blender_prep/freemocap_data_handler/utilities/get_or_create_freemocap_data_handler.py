@@ -1,5 +1,5 @@
 
-from freemocap_data_handler.handler import FreemocapDataHandler
+from freemocap_blender_prep.freemocap_data_handler.handler import FreemocapDataHandler
 
 FREEMOCAP_DATA_HANDLER = None
 
