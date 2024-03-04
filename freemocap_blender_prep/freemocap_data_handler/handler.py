@@ -456,62 +456,6 @@ class FreemocapDataHandler:
         self.freemocap_data.other[component.name] = component
         self.mark_processing_stage(f"added_{component.name}")
 
-    def extract_data_from_empties(self, empties: Dict[str, Any], stage_name: str = "from_empties"):
-
-        try:
-            import bpy
-            print(f"Extracting data from empties {empties.keys()}")
-
-            body_frames = []
-            right_hand_frames = []
-            left_hand_frames = []
-            face_frames = []
-            other_components_frames = {}
-
-            for frame_number in range(bpy.context.scene.frame_start, bpy.context.scene.frame_end):
-                print(f"Extracting data from frame {frame_number}...")
-                bpy.context.scene.frame_set(frame_number)
-
-                if "body" in empties.keys():
-                    body_frames.append(np.array(
-                        [bpy.data.objects[empty_name].location for empty_name in empties["body"].keys()]))
-
-                if "hands" in empties.keys():
-                    right_hand_frames.append(np.array(
-                        [bpy.data.objects[empty_name].location for empty_name in empties["hands"]["right"].keys()]))
-
-                    left_hand_frames.append(np.array(
-                        [bpy.data.objects[empty_name].location for empty_name in empties["hands"]["left"].keys()]))
-
-                if "face" in empties.keys():
-                    face_frames.append(np.array(
-                        [bpy.data.objects[empty_name].location for empty_name in empties["face"].keys()]))
-
-                if "other" in empties.keys():
-                    for other_name, other_component in self.freemocap_data.other.items():
-                        if not other_name in other_components_frames.keys():
-                            other_components_frames[other_name] = []
-                        other_components_frames[other_name].append(np.ndarray(bpy.data.objects[other_name].location))
-
-            if len(body_frames) > 0:
-                self.body_frame_name_xyz = np.array(body_frames)
-            if len(right_hand_frames) > 0:
-                self.right_hand_frame_name_xyz = np.array(right_hand_frames)
-            if len(left_hand_frames) > 0:
-                self.left_hand_frame_name_xyz = np.array(left_hand_frames)
-            if len(face_frames) > 0:
-                self.face_frame_name_xyz = np.array(face_frames)
-            if len(other_components_frames) > 0:
-                for other_name, other_component_frames in other_components_frames.items():
-                    self.freemocap_data.other[other_name].data = np.array(other_component_frames)
-
-        except Exception as e:
-            print(f"Failed to extract data from empties {empties.keys()}")
-            print(e)
-            raise e
-
-        self.mark_processing_stage(stage_name)
-
     def calculate_virtual_trajectories(self):
         print(f"Calculating virtual trajectories")
         try:
